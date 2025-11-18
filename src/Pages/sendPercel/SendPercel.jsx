@@ -1,19 +1,23 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
+import Swal from "sweetalert2";
 
 const SendPercel = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm();
 
   const serviceCenter = useLoaderData();
   const regionsDeulicate = serviceCenter.map((c) => c.region);
   const regions = [...new Set(regionsDeulicate)];
-  const senderRegion = watch("senderRegion");
+
+  // explore useMemo useFallback
+  const senderRegion = useWatch({ control, name: "senderRegion" });
+  const receiverRegion = useWatch({ control, name: "receiverRegion" });
 
   const districtByRegion = (region) => {
     const regionDistricts = serviceCenter.filter((c) => c.region === region);
@@ -22,7 +26,45 @@ const SendPercel = () => {
   };
 
   const handleSendSubmit = (data) => {
-    console.log(data);
+    const isDocument = data.parcelType === "document";
+    const isSameDistrict = data.senderDistrict === data.receiverDistrict;
+    const parcelWeight = parseFloat(data.parcelWeight);
+
+    let cost = 0;
+    if (isDocument) {
+      cost = isSameDistrict ? 60 : 80;
+    } else {
+      if (parcelWeight < 3) {
+        cost = isSameDistrict ? 110 : 150;
+      } else {
+        const minimumCharge = isSameDistrict ? 110 : 150;
+        const extraWeight = parcelWeight - 3;
+        const extraCharge = isSameDistrict
+          ? extraWeight * 40
+          : extraWeight * 40 + 40;
+        cost = minimumCharge + extraCharge;
+      }
+    }
+
+    console.log("cost", cost);
+
+    Swal.fire({
+      title: "Agree with the cost?",
+      text: `You will be charged ${cost} Taka`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, take it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
   };
 
   return (
@@ -131,10 +173,10 @@ const SendPercel = () => {
                 defaultValue="Pick a district"
                 className="select"
               >
-                <option disabled={true}>Pick a Region</option>
-                {districtByRegion(senderRegion).map((r, index) => (
-                  <option key={index} value={r}>
-                    {r}
+                <option disabled={true}>Pick a district</option>
+                {districtByRegion(senderRegion).map((d, index) => (
+                  <option key={index} value={d}>
+                    {d}
                   </option>
                 ))}
               </select>
@@ -184,6 +226,45 @@ const SendPercel = () => {
               className="input outline-none w-full"
               placeholder="Receiver Email"
             />
+
+            {/* Receiver region */}
+
+            <fieldset className="fieldset">
+              <legend className="fieldset-legend">Receiver Regions</legend>
+              <select
+                {...register("receiverRegion")}
+                defaultValue="Pick a region"
+                className="select"
+              >
+                <option disabled={true}>Pick a Region</option>
+                {regions.map((r, index) => (
+                  <option key={index} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+              <span className="label">Optional</span>
+            </fieldset>
+
+            {/* Receiver district */}
+
+            <fieldset className="fieldset">
+              <legend className="fieldset-legend">Receiver District</legend>
+              <select
+                {...register("receiverDistrict")}
+                defaultValue="Pick a district"
+                className="select"
+              >
+                <option disabled={true}>Pick a district</option>
+                {districtByRegion(receiverRegion).map((d, index) => (
+                  <option key={index} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+              <span className="label">Optional</span>
+            </fieldset>
+
             {/* Address */}
             <label className="label font-semibold text-[14px] mt-4">
               Receiver Address
@@ -194,16 +275,7 @@ const SendPercel = () => {
               className="input outline-none w-full"
               placeholder="Receiver Address"
             />
-            {/* District */}
-            <label className="label font-semibold text-[14px] mt-4">
-              Receiver District
-            </label>
-            <input
-              {...register("receiverDistrict")}
-              type="text"
-              className="input outline-none w-full"
-              placeholder="Receiver District"
-            />
+
             {/* textarea */}
             <legend className="fieldset-legend">Pickup Instruction</legend>
             <textarea
