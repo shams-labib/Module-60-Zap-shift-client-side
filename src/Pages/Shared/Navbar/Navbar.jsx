@@ -25,6 +25,9 @@ const Navbar = () => {
       <li>
         <NavLink to={"/coverage"}>Coverage</NavLink>
       </li>
+      <li>
+        <NavLink to={"/rider"}>Be a rider</NavLink>
+      </li>
 
       {user && (
         <>

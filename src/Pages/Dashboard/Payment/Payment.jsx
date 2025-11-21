@@ -7,7 +7,7 @@ const Payment = () => {
   const { parcelId } = useParams();
 
   const { isLoading, data: parcel } = useQuery({
-    queryKey: ["parcels", parcelId],
+    queryKey: ["payments", parcelId],
     queryFn: async () => {
       const res = await axiosSecure.get(`/parcels/${parcelId}`);
 
