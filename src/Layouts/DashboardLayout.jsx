@@ -6,6 +6,7 @@ import UseRole from "../Hooks/userRole/UseRole";
 import { RiEBikeFill } from "react-icons/ri";
 import { FaTasks } from "react-icons/fa";
 import { SiGoogletasks } from "react-icons/si";
+import logoImg from "../assets/logo.png";
 
 const DashboardLayout = () => {
   const { role } = UseRole();
@@ -53,9 +54,16 @@ const DashboardLayout = () => {
           {/* Sidebar content here */}
           <ul className="menu w-full grow space-y-5">
             {/* List item */}
+
+            <li>
+              <Link to={"/"}>
+                <img src={logoImg} alt="" />
+              </Link>
+            </li>
+
             <li>
               <Link
-                to={"/"}
+                to={"/dashboard"}
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                 data-tip="Homepage"
               >

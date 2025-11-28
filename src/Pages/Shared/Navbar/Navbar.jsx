@@ -17,16 +17,13 @@ const Navbar = () => {
         <NavLink to={""}>Services</NavLink>
       </li>
       <li>
-        <NavLink to={""}>About Us</NavLink>
-      </li>
-      <li>
-        <NavLink to={"/send-parcel"}>Send Parcel</NavLink>
-      </li>
-      <li>
-        <NavLink to={"/coverage"}>Coverage</NavLink>
+        <NavLink to={"/send-parcel"}>Send a Parcel</NavLink>
       </li>
       <li>
         <NavLink to={"/rider"}>Be a rider</NavLink>
+      </li>
+      <li>
+        <NavLink to={"/coverage"}>Coverage Areas</NavLink>
       </li>
 
       {user && (
@@ -34,8 +31,15 @@ const Navbar = () => {
           <li>
             <NavLink to={"/dashboard/my_parcel"}>My Parcel</NavLink>
           </li>
+          <li>
+            <NavLink to={"/dashboard"}>Dashboard</NavLink>
+          </li>
         </>
       )}
+
+      <li>
+        <NavLink to={""}>About Us</NavLink>
+      </li>
     </>
   );
 

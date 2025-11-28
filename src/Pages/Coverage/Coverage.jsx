@@ -22,7 +22,7 @@ const Coverage = () => {
   };
 
   return (
-    <div className="text-center my-20 space-y-8">
+    <div className="text-center my-20 space-y-8 p-8">
       <h2 className="text-3xl">We are available in 64 districts</h2>
 
       <div>
